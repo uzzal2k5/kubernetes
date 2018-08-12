@@ -31,29 +31,29 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
         *   Install Red Hat Subscription Manager (rhsm)
 ##### Step-2:
 * Configure Etcd
-    * Run etcd.sh from configuration directory
-        
-        
-        * configure /etc/etcd/etcd.conf
+    
+    * Run etcd.sh from configuration directory  
+                
+    * configure /etc/etcd/etcd.conf
             
-            #### #[member]
+            #[member]
             
             ETCD_NAME=default
             ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
             ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"
            
-            #### #[cluster]
+            #[cluster]
             
             ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379"
            
-        * Configure etcd network for PODS
+    * Configure etcd network for PODS
             
             systemctl start etcd
             systemctl enable etcd
             etcdctl mkdir /kube-centos/network
             etcdctl mk /kube-centos/network/config "{ \"Network\":\"172.30.0.0/16\",\"SubnetLen\":24,\"Backend\": {\"Type\":\"vxlan\"}}"
         
-        *  Start Etcd Service
+    *  Start Etcd Service
             
             for SERVICES in etcd;
             do
@@ -110,6 +110,14 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
 ##### Step-3 :
 * Finalize Master Service
     *   Run start-master.sh and Cheers!  
+    
+        for SERVICES in kube-apiserver kube-controller-manager kube-scheduler;
+        do
+            systemctl restart $SERVICES
+            systemctl enable $SERVICES
+            systemctl status -l $SERVICES
+        done
+
 
 
 
@@ -156,6 +164,14 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
 ##### Step-4 :
 * Finalize Nodes Service
     *   Run start-nodes.sh and Cheers!  
+    
+        for SERVICES in kube-proxy  kubelet flanneld docker;
+        do
+            systemctl restart $SERVICES
+            systemctl enable $SERVICES
+            systemctl status -l $SERVICES
+        done
+
     
 
 
