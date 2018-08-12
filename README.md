@@ -1,4 +1,4 @@
-### K8S Single Master Node Cluster
+### K8S Single Master with multi Nodes Cluster along with separate Etcd
 
 Follow Some steps to Install and Configure K8s cluster 
 
