@@ -12,11 +12,39 @@ Follow Some steps to Install and Configure K8s cluster
 ##### Step-2:
 * Run hosts.sh scripts on all vm  to configure hostname dns entry on /etc/hosts  file
 
+        #!/usr/bin/env bash
+        # Change ip address and hostname according to your settings
+        
+        hosts='192.168.0.64 kube-master
+        192.168.0.65 kube-node1
+        192.168.0.66 etcd
+        192.168.0.67 kube-node2
+        '
+        
+        if grep -Fxq "$hosts" /etc/hosts
+        then
+            echo "Host names already exist"
+        else
+            echo "$hosts">>/etc/hosts
+        fi
+        
+
 ##### Step-3 :
 * Run preconfig.sh on  master and nodes and etcd  to disable followings  -
     *   NetworkManager
     *   SELinux
     *   Firewalld
+    
+            #!/usr/bin/env bash
+            setenforce 0
+            sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+        
+            for SERVICES in firewalld NetworkManager;
+            do
+                systemctl disable $SERVICES
+                systemctl stop $SERVICES
+            done
+
 
 ###### Note :  
 Look at on_master, on_node, on_etcd folders under configuration to complete all steps on master, on_nodes and etcd for configuration
