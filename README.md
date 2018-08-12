@@ -111,12 +111,12 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
 * Finalize Master Service
     *   Run start-master.sh and Cheers!  
     
-        for SERVICES in kube-apiserver kube-controller-manager kube-scheduler;
-        do
-            systemctl restart $SERVICES
-            systemctl enable $SERVICES
-            systemctl status -l $SERVICES
-        done
+            for SERVICES in kube-apiserver kube-controller-manager kube-scheduler;
+            do
+                systemctl restart $SERVICES
+                systemctl enable $SERVICES
+                systemctl status -l $SERVICES
+            done
 
 
 
@@ -162,16 +162,16 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
                 
                   * Note: Change 'eth1' if needed. This interface will be on that which one you want to use for PODs internal Networking
      
-##### Step-4 :
+##### Step-3 :
 * Finalize Nodes Service
     *   Run start-nodes.sh and Cheers!  
     
-        for SERVICES in kube-proxy  kubelet flanneld docker;
-        do
-            systemctl restart $SERVICES
-            systemctl enable $SERVICES
-            systemctl status -l $SERVICES
-        done
+            for SERVICES in kube-proxy  kubelet flanneld docker;
+            do
+                systemctl restart $SERVICES
+                systemctl enable $SERVICES
+                systemctl status -l $SERVICES
+            done
 
     
 
