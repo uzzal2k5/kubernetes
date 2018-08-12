@@ -129,6 +129,7 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
         *   Install kubernetes package
         *   Install Flanneld Package
         *   Install Docker Package
+
 ##### Step-2:
 * Configure Master
       
