@@ -1,0 +1,4 @@
+FLANNEL_ETCD_ENDPOINTS="http://etcd:2379"
+FLANNEL_ETCD_PREFIX="/kube-centos/network"
+FLANNEL_OPTIONS="--iface=eth1"
+
