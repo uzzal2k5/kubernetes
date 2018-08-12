@@ -2,7 +2,7 @@
 
 Follow Some steps to Install and Configure K8s cluster 
 
-####PREPARATION FACE
+#### PREPARATION FACE
 ##### Step-1:
 * Install or build    3  or more fresh Centos 7 minimal VM. 
     *   One Master VM With 2 NIC 
@@ -18,11 +18,11 @@ Follow Some steps to Install and Configure K8s cluster
     *   SELinux
     *   Firewalld
 
-######Note :  
+###### Note :  
 Look at on_master, on_node, on_etcd folders under configuration to complete all steps on master, on_nodes and etcd for configuration
 
 
-####INSTALL AND CONFIGURE  ETCD
+#### INSTALL AND CONFIGURE  ETCD
 ##### Step-1:
 * Install Package on Master
     * Run "etcd" from install directory. This will do -
@@ -36,12 +36,14 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
         
         * configure /etc/etcd/etcd.conf
             
-            # [member]
+            #### #[member]
+            
             ETCD_NAME=default
             ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
             ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"
            
-            #[cluster]
+            #### #[cluster]
+            
             ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379"
            
         * Configure etcd network for PODS
@@ -60,7 +62,7 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
                 systemctl status -l $SERVICES
             done
  
-####INSTALL AND CONFIGURE  MASTER
+#### INSTALL AND CONFIGURE  MASTER
 ##### Step-1:
 * Install Package on Master
     * Run master_install.sh from install directory. This will do -
@@ -111,7 +113,7 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
 
 
 
-####INSTALL AND CONFIGURE  NODES
+#### INSTALL AND CONFIGURE  NODES
 ##### Step-1 :
 * Install Package on Master
     * Run node_install.sh from install directory. This will do -
@@ -157,7 +159,7 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
     
 
 
-####TEST CLUSTER
+#### TEST CLUSTER
 * To check node availability on master run -
     *   kubectl get nodes
         *   OutComes you see
@@ -170,7 +172,7 @@ Look at on_master, on_node, on_etcd folders under configuration to complete all 
 
 
 
-####SCALE OUT NODES INTO CLUSTER
+#### SCALE OUT NODES INTO CLUSTER
 *   You can add more node following the steps on node section
  
             Follow: INSTALL AND CONFIGURE  NODES  
