@@ -10,7 +10,8 @@ do
     systemctl stop ${SERVICES}
 done
 # IP address grep - Device ens33 , enp0s31f6
-IP_ADDRESS=`ip a | grep inet | egrep enp0s31f6 | awk -F ' ' '{print $2}' | awk -F / '{print $1}'`
+IP_ADDRESS=`ip a | grep inet | egrep ens33 | awk -F ' ' '{print $2}' | awk -F / '{print $1}'`
+
 
 hosts="${IP_ADDRESS} kube-master kube-node etcd"
 
@@ -21,6 +22,7 @@ then
 else
     echo "$hosts">>/etc/hosts
 fi
+
 
 # Add Repository
 cat << EOF >/etc/yum.repos.d/virt7-docker-common-release.repo
@@ -38,7 +40,7 @@ yum install -y --enablerepo=virt7-docker-common-release \
     etcd \
     *rhsm*
 
-
+sh dashboard/x509-auth.sh
 # ETCD.CONF
 cat <<EOF > /etc/etcd/etcd.conf
 # [member]
@@ -121,7 +123,7 @@ FLANNEL_ETCD_ENDPOINTS="http://etcd:2379"
 FLANNEL_ETCD_PREFIX="/kube-network/network"
 
 # Any additional options that you want to pass
-FLANNEL_OPTIONS="--iface=enp0s31f6"
+FLANNEL_OPTIONS="--iface=ens33"
 
 EOF
 
