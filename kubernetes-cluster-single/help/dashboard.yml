@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: 2018-11-09T10:13:37Z
+  labels:
+    k8s-addon: kubernetes-dashboard.addons.k8s.io
+    k8s-app: kubernetes-dashboard
+    kubernetes.io/cluster-service: "true"
+  name: kubernetes-dashboard
+  namespace: kube-system
+  resourceVersion: "11830"
+  selfLink: /api/v1/namespaces/kube-system/services/kubernetes-dashboard
+  uid: 1f82cb69-e408-11e8-90cf-000c29801fc4
+spec:
+  clusterIP: 10.254.37.140
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    k8s-app: kubernetes-dashboard
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
