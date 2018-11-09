@@ -2,7 +2,7 @@
 set -e
 
 setenforce 0
-sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+sed -i --follow-symlinks 's/SELINUX=disabled/SELINUX=enforcing/g' /etc/sysconfig/selinux
 
 for SERVICES in firewalld NetworkManager;
 do
@@ -25,22 +25,22 @@ fi
 
 
 # Add Repository
-cat << EOF >/etc/yum.repos.d/virt7-docker-common-release.repo
+cat << EOF >/etc/yum.repos.d/virt7-kubernetes-19-release.repo
 [virt7-docker-common-release]
 name = virt7-docker-common-release
-baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+baseurl=http://cbs.centos.org/repos/virt7-kubernetes-19-release/x86_64/os/
 gpgcheck=0
 EOF
 
 # Install Require packages
-yum install -y --enablerepo=virt7-docker-common-release \
+yum install -y --enablerepo=virt7-kubernetes-19-release \
     kubernetes \
     flannel \
     docker \
     etcd \
     *rhsm*
 
-sh dashboard/x509-auth.sh
+cd dashboard && sh x509-auth.sh
 # ETCD.CONF
 cat <<EOF > /etc/etcd/etcd.conf
 # [member]
