@@ -19,3 +19,5 @@ spec:
         image: portainer/portainer:latest
         ports:
         - containerPort: 9000
+      imagePullSecrets:
+      - name: regcred

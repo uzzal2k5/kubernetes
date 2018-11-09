@@ -2,7 +2,7 @@
 set -e
 
 setenforce 0
-sed -i --follow-symlinks 's/SELINUX=disabled/SELINUX=enforcing/g' /etc/sysconfig/selinux
+sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 
 for SERVICES in firewalld NetworkManager;
 do
@@ -25,15 +25,15 @@ fi
 
 
 # Add Repository
-cat << EOF >/etc/yum.repos.d/virt7-kubernetes-19-release.repo
-[virt7-docker-common-release]
-name = virt7-docker-common-release
-baseurl=http://cbs.centos.org/repos/virt7-kubernetes-19-release/x86_64/os/
+cat << EOF >/etc/yum.repos.d/virt7-kubernetes-110-release.repo
+[virt7-kubernetes-19-release]
+name = virt7-kubernetes-110-release
+baseurl=http://cbs.centos.org/repos/virt7-kubernetes-110-release/x86_64/os/
 gpgcheck=0
 EOF
 
 # Install Require packages
-yum install -y --enablerepo=virt7-kubernetes-19-release \
+yum install -y --enablerepo=virt7-kubernetes-110-release \
     kubernetes \
     flannel \
     docker \
@@ -144,13 +144,15 @@ KUBELET_PORT="--port=10250"
 KUBELET_HOSTNAME="--hostname-override=kube-node"
 
 # location of the api-server
-KUBELET_API_SERVER="--api-servers=http://kube-master:8080"
+#KUBELET_API_SERVER="--api-servers=http://kube-master:8080"
 
 # pod infrastructure container
 #KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest"
 
 # Add your own!
-KUBELET_ARGS=""
+#KUBELET_ARGS="--cluster-dns=10.254.0.2 --experimental-bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig --kubeconfig=/etc/kubernetes/kubelet.kubeconfig --require-kubeconfig --cert-dir=/etc/kubernetes/ssl --cluster-domain=cluster.local --hairpin-mode promiscuous-bridge --serialize-image-pulls=false"
+#KUBELET_ARGS=""
+KUBELET_ARGS="--cgroup-driver=systemd --fail-swap-on=false"
 
 EOF
 
