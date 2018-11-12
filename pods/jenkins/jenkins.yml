@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  labels:
+    app: jenkins
+    name: jenkins-ninja-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+        name: ninja-jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: jenkinsci/jenkins:lts
+        ports:
+        - name: http-port
+          containerPort: 8080
+        - name: disco-port
+          containerPort: 50000
+        volumeMounts:
+        - mountPath: /var/jenkins_home
+          name: jenkins-home-volume
+        - mountPath: /var/run/docker.sock
+          name: docker-sock-jenkins
+      volumes:
+      - name: jenkins-home-volume
+        emptyDir: {}
+      - name: docker-sock-jenkins
+        hostPath:
+          path: /var/run/docker.sock
+          type: File
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+  namespace: default
+spec:
+  selector:
+    app: jenkins
+    name: ninja-jenkins
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
