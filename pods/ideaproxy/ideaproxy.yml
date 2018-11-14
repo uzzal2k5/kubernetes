@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: logs-volume
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: "/tmp/myvol"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: logs-volume-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ideaproxy-deployment
+  labels:
+    app: ideaproxy
+    name: idea-proxy-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: idea_nginx
+  template:
+    metadata:
+      labels:
+        app: idea_nginx
+        name: idea-proxy
+    spec:
+      containers:
+      - name: ideaproxy
+        image: nginx:alpine
+        ports:
+        - name: http-port
+          containerPort: 80
+        - name: https-port
+          containerPort: 443
+        volumeMounts:
+        - mountPath: /var/log/nginx
+          name: nginx-log-volume
+      restartPolicy: Always
+      volumes:
+      - name: nginx-log-volume
+        persistentVolumeClaim:
+          claimName: logs-volume-claim
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ideaproxy-service
+  namespace: default
+spec:
+  selector:
+    app: idea_nginx
+    name: idea-proxy
+  ports:
+  - name: server-http-port
+    port: 80
+    targetPort: 80
+  type: LoadBalancer

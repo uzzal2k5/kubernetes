@@ -4,14 +4,30 @@ set -e
 yum update -y
 yum install -y net-tools wget curl vim
 yum install -y socat
+setenforce 0
+sed -i '/^SELINUX./ { s/enforcing/disabled/; }' /etc/selinux/config
+# sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 
-for DISABLED_SERVICES in firewalld;
-do
-    systemctl disable ${DISABLED_SERVICES}
-    systemctl stop ${DISABLED_SERVICES}
-done
+# Disable swap
+swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
-IP_ADDRESS=`ip a | grep inet | egrep eth0 | awk -F ' ' '{print $2}' | awk -F / '{print $1}'`
+
+swapoff -a
+# Set iptables
+cat <<EOF > /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system
+
+#for DISABLED_SERVICES in firewalld;
+#do
+#    systemctl disable ${DISABLED_SERVICES}
+#    systemctl stop ${DISABLED_SERVICES}
+#done
+
+IP_ADDRESS=`ip a | grep inet | egrep br0 | awk -F ' ' '{print $2}' | awk -F / '{print $1}'`
 hosts="${IP_ADDRESS} kube-master"
 
 
@@ -22,12 +38,6 @@ else
     echo "$hosts">>/etc/hosts
 fi
 
-setenforce 0
-sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
-
-swapoff -a
-
-#sed -i --follow-symlinks 's/\/dev/mapper/ninja-swap/\#/dev/mapper/ninja-swap/g' /etc/fstab
 
 yum install docker -y
 
@@ -65,4 +75,5 @@ for i in {1..150}; do # timeout for 5 minutes
   fi
   sleep 2
 done
+
 

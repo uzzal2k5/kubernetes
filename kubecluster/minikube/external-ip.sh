@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+# ADD EXTERNAL IP TO NODE AS WELL AS SERVICES

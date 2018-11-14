@@ -1,0 +1,45 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: k8s-dashboard
+  namespace: kube-system
+spec:
+  selector:
+    app: kubernetes-dashboard
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9090
+  clusterIP: 10.102.140.55
+  #loadBalancerIP: 10.102.140.100
+  type: LoadBalancer
+  externalIPs:
+  - 10.1.1.24
+status:
+  loadBalancer:
+    ingress:
+    - ip: 146.148.47.155
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: k8s-dashboard
+  namespace: kube-system
+spec:
+  selector:
+    app: kubernetes-dashboard
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9090
+    nodePort: 30001
+  clusterIP: 10.102.140.55
+  #loadBalancerIP: 10.102.140.100
+  type: LoadBalancer
+  externalIPs:
+  - 10.1.1.24
+status:
+  loadBalancer:
+    ingress:
+    - ip: 146.148.47.155

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-deployment
+  labels:
+    app: httpd-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpd-web
+  template:
+    metadata:
+      labels:
+        app: httpd-web
+    spec:
+      containers:
+      - name: webpod
+        image: uzzal2k5/httpd:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: httpd-service
+  namespace: default
+spec:
+  selector:
+    app: httpd-web
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  externalIPs:
+  - 10.1.1.26
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: httpd-ingress
+spec:
+  backend:
+    serviceName: httpd-service
+    servicePort: 80
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: k8s-dashboard-ingress
+spec:
+  backend:
+    serviceName: kubernetes-dashboard
+    servicePort: 80
