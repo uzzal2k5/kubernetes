@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+kubectl create serviceaccount dashboard -n default
+kubectl create clusterrolebinding dashboard-admin -n default  --clusterrole=cluster-admin  --serviceaccount=default:dashboard
+kubectl get secret $(kubectl get serviceaccount kubernetes-dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
+#=========++TOKEN++=========
+# eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRhc2hib2FyZC10b2tlbi00bDJjdiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJkYXNoYm9hcmQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIwYzU5MzViNS1lYzk0LTExZTgtOThjZC0wODAwMjdiZTM0NGEiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpkYXNoYm9hcmQifQ.k7Z6yl-_4Pyhcya5Ak1WeFDB3K4SaJvDS6qLyA3MRvwoOnatb3px5G9GRTyuBWZR0Fe5fI027AUHDX8mcR5D3QvcqVY0gOL3ZTjJ7_aVvFHTinJH_qvbuZyzqMEjULa8-h9LjQ5CT3yJS2hWktphtHXqa4Nv-sWOqILngK1ZbvUZAPzpCw-Jh6WoJJ7eYxcV9vqMdw7IiY7KyjWFkyyc-shkMtnzDGYF-wPUz_h3F5o2JSnFyVgixjHIwBfV-eJN2Xx6YlM-Mi54MzF9B8tMfwHAnpAiHrZgTrv_0uCHNhdOFYxuIGNduPmK6ccY9zzx84-WcIW4joxqc4_fbJvZ4A

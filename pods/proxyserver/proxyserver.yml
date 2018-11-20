@@ -11,7 +11,7 @@ spec:
   accessModes:
   - ReadWriteOnce
   hostPath:
-    path: "/tmp/myvol"
+    path: "/tmp/proxyserver"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -27,24 +27,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ideaproxy-deployment
+  name: proxyserver-deployment
   labels:
-    app: ideaproxy
-    name: idea-proxy-deploy
+    app: proxyserver
+    name: proxyserver-proxy-deploy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: idea_nginx
+      app: proxyserver_nginx
   template:
     metadata:
       labels:
-        app: idea_nginx
-        name: idea-proxy
+        app: proxyserver_nginx
+        name: proxyserver-proxy
     spec:
       containers:
-      - name: ideaproxy
-        image: nginx:alpine
+      - name: proxyserver
+        image: uzzal2k5/proxyserver:latest
         ports:
         - name: http-port
           containerPort: 80
@@ -54,6 +54,8 @@ spec:
         - mountPath: /var/log/nginx
           name: nginx-log-volume
       restartPolicy: Always
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       volumes:
       - name: nginx-log-volume
         persistentVolumeClaim:
@@ -64,14 +66,23 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ideaproxy-service
+  name: proxyserver-service
   namespace: default
 spec:
   selector:
-    app: idea_nginx
-    name: idea-proxy
+    app: proxyserver_nginx
+    name: proxyserver-proxy
   ports:
-  - name: server-http-port
-    port: 80
-    targetPort: 80
+  - name: server-https-port
+    port: 443
+    targetPort: 443
   type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: proxyserver-ingress
+spec:
+  backend:
+    serviceName: proxyserver-service
+    servicePort: 443

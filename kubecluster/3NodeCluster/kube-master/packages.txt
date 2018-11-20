@@ -1,0 +1,7 @@
+net-tools
+vim
+bridge-utils
+docker
+kubelet
+kubeadm
+kubectl
